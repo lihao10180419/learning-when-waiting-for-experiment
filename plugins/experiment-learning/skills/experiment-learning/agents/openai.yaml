@@ -1,0 +1,4 @@
+interface:
+  display_name: "实验间隙学习"
+  short_description: "在本机长实验确实运行且主项目明确等待时，向独立学习对话投递短卡片"
+  default_prompt: "使用 $experiment-learning 启动这个本机实验，并在确认进入等待后安排短学习。"

@@ -1,0 +1,20 @@
+{
+  "name": "experiment-learning-community",
+  "interface": {
+    "displayName": "Experiment Learning"
+  },
+  "plugins": [
+    {
+      "name": "experiment-learning",
+      "source": {
+        "source": "local",
+        "path": "./plugins/experiment-learning"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "thread_id": null,
+  "thread_name": "实验间隙学习",
+  "connection_verified": false,
+  "stable_seconds": 30,
+  "expected_min_seconds": 600,
+  "unknown_seconds": 180,
+  "poll_seconds": 0.5,
+  "quiet_start": 23,
+  "quiet_end": 8,
+  "utc_offset_hours": 8,
+  "queue_timeout_seconds": 40,
+  "reply_timeout_seconds": 90,
+  "auto_start_on_boot": false,
+  "auto_start_on_codex_open": false,
+  "autostart_watcher_on_windows_logon": false
+}

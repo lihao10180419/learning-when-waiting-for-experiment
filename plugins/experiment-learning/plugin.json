@@ -1,0 +1,37 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "experiment-learning",
+  "version": "0.1.0",
+  "description": "Windows local experiment-wait learning assistant for Codex, with zero-token process monitoring.",
+  "author": {
+    "name": "lihao10180419"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/lihao10180419/learning-when-waiting-for-experiment",
+  "keywords": [
+    "codex",
+    "learning",
+    "experiments",
+    "windows"
+  ],
+  "extensions": {
+    "com.openai": {
+      "onboardingSkill": "./skills/experiment-learning-setup/SKILL.md",
+      "interface": {
+        "displayName": "Experiment Learning · 实验间隙学习",
+        "shortDescription": "Short learning cards during verified local experiment waits",
+        "longDescription": "A Windows local monitor with zero model-token polling. Sends short cards to a separately bound Codex thread only during explicit experiment waits.",
+        "developerName": "lihao10180419",
+        "category": "Productivity",
+        "capabilities": [
+          "Read",
+          "Write"
+        ],
+        "defaultPrompt": [
+          "Set up experiment-wait learning with my own separate learning thread.",
+          "Run this local experiment and send a learning card when I am waiting for results."
+        ]
+      }
+    }
+  }
+}

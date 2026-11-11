@@ -1,0 +1,4 @@
+interface:
+  display_name: "实验间隙学习设置"
+  short_description: "绑定独立学习会话，验证真实回复，并设置本机实验等待接入与自动启动"
+  default_prompt: "使用 $experiment-learning-setup 设置实验等待学习助手，先验证独立学习会话的真实回复。"
