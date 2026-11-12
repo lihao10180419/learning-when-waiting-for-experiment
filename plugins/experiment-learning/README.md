@@ -2,7 +2,7 @@
 
 Windows-only local experiment-wait monitor, native Codex learning thread and optional desktop-open watcher. Monitoring and app detection make no model calls; actual native delivery and the explicit connection probe use account quota.
 
-Entry point: `python scripts/manage.py`. First run `init` and `doctor`, bind a **separate** persistent Codex thread with `bind --thread UUID`, then run one `probe`. Continue only after `reply_confirmed`. `queued_accepted` is not proof of a reply. Never bind the main project or a mobile ChatGPT conversation.
+Entry point: `python scripts/manage.py`. First run `init` and `doctor`. A complete native CLI and reachable local daemon are prerequisites; use `set-cli --executable PATH` for an existing complete CLI when PATH selects the desktop bundle, and `backend status` for read-only diagnostics. `backend start` is an explicitly authorized shared-service start, never a monitor polling action. Then bind a **separate** persistent Codex thread with `bind --thread UUID` and run one `probe`. Continue only after `reply_confirmed`. `queued_accepted` is not proof of a reply. Never bind the main project or a mobile ChatGPT conversation.
 
 Use `integrate --scope user` only when the user requests all-project integration, or `integrate --scope project --project PATH` for one project. Existing instructions are preserved and backed up. Then `start` the monitor. `enable-autostart` is optional and creates a current-user Startup shortcut; `disable-autostart` removes this plugin's verified shortcut and exits the watcher. Neither stops experiments.
 

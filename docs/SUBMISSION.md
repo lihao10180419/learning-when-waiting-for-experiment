@@ -31,7 +31,7 @@
 
 已按本人授权公开现有 GitHub 仓库及历史，开启 Issues，以仓库文档提供介绍、支持、[隐私政策](../plugins/experiment-learning/docs/PRIVACY.md)与[使用条款](../plugins/experiment-learning/docs/TERMS.md)。四个 HTTPS 页面均以无登录、无 Cookie、无令牌的请求读取到正确正文，并已写入两份清单，验证记录见 [PUBLIC_LINKS.md](PUBLIC_LINKS.md)。
 
-发布资料字段已补齐。平台身份认证由本人完成；原生投递验收及本机执行适用性仍待解决，**不能标为可直接送审**。`validate_release.py` 的空 listing_gaps 仅代表所检查字段齐全，不代表身份验证、功能验收或官方审核通过。
+发布资料字段已补齐；原生投递与实际安装验收已通过，见 [VERIFICATION.md](VERIFICATION.md)。本机执行的纯技能提交通道已按专门官方文档确认。上传包准备完成，后续由本人完成身份认证、导入核对、扫描和声明。空 listing_gaps 不代表身份验证或官方审核通过。
 
 ## 审查人员复现
 
@@ -43,8 +43,8 @@
 
 ## 到官方平台前
 
-官方本机插件指南要求：核心依赖本机执行、文件系统/桌面应用或离线能力的插件，在提交前联系 OpenAI 确认产品适用范围。这是本项目的独立适用性问题，不能靠设置 `requires_local_executor` 或身份认证代替。给 OpenAI 的说明模板见 [ELIGIBILITY.md](ELIGIBILITY.md)。
+专门的官方本机插件指南明确列出“没有 MCP 的插件”路径：纯技能调用本机程序时声明 requires_local_executor=true，按标准流程提交。本机 MCP 的合作方白名单限制不直接适用于这个无 MCP 包。平台仍可能就本机执行和队列/会话记录适配要求专项审查；技术归类并非获批。依据与审查说明见 [ELIGIBILITY.md](ELIGIBILITY.md)。
 
-技术与发布事实齐全、适用范围确认后，再由本人登录官方插件平台、选正确组织、完成身份验证；上传候选 ZIP，检查导入元数据、扫描与平台提示，亲自完成法律/政策声明，再提交审核。上传、提交、通过和公开发布是不同状态。本次没有在平台创建草稿、提交或发布。
+本人可先完成身份认证，再按[身份认证与送审步骤](IDENTITY_AND_SUBMISSION.md)进入官方平台、选正确组织，上传 ZIP，检查导入元数据、扫描与提示，亲自完成法律/政策声明，再提交审核。上传、提交、通过和公开发布是不同状态。本次没有在平台创建草稿、提交或发布。
 
 官方依据：[送审流程](https://developers.openai.com/plugins/deploy/submission)、[本机插件](https://developers.openai.com/plugins/deploy/desktop-only)、[本机执行适用性说明](https://developers.openai.com/plugins/guides/submit-claude-plugin)。

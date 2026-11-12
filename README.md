@@ -16,7 +16,7 @@ Start experiment → confirm process → main agent marks waiting
 
 ## Install
 
-Requirements: **Windows 10/11, Python 3.10+, a signed-in Codex desktop app, and a CLI supporting `codex queue`**. The original native delivery was tested with CLI `0.167.0-alpha.3.2`; other versions must pass their own connection probe. macOS, Linux and remote job monitoring are not supported by this release.
+Requirements: **Windows 10/11, Python 3.10+, a signed-in Codex desktop app, a complete native CLI supporting `codex queue`, and a reachable local daemon**. Packaged CLI/daemon `0.167.2` passed the native acceptance; every installation must pass its own connection probe. macOS, Linux and remote job monitoring are not supported by this release.
 
 ```powershell
 codex plugin marketplace add https://github.com/lihao10180419/learning-when-waiting-for-experiment.git
@@ -78,4 +78,4 @@ MIT © 2026 lihao10180419 and contributors.
 
 Packaging follows the [official OpenAI plugin guide](https://developers.openai.com/plugins/build/plugins); command and hook behavior should be checked against the installed CLI and [official CLI reference](https://learn.chatgpt.com/docs/cli/reference).
 
-Version 0.1.1 builds separate `-source.zip` and `-submission.zip` artifacts. The submission ZIP contains one plugin at its root. Individual publisher `lihao10180419` has selected all available countries/regions and no plugin commerce. All four listing URLs are publicly verified; native delivery verification and desktop-directory eligibility remain unresolved. See [SUBMISSION.md](docs/SUBMISSION.md).
+Version 0.1.1 builds separate `-source.zip` and `-submission.zip` artifacts. The submission ZIP contains one plugin at its root. Individual publisher `lihao10180419` has selected all available countries/regions and no plugin commerce. All four listing URLs are publicly verified. Fresh-profile native success/failure and a real local installation passed. The documented Desktop-only skills route applies; owner identity verification, Portal scans and attestations remain. See [SUBMISSION.md](docs/SUBMISSION.md) and [owner steps](docs/IDENTITY_AND_SUBMISSION.md).

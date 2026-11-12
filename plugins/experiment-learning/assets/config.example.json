@@ -2,6 +2,7 @@
   "thread_id": null,
   "thread_name": "实验间隙学习",
   "connection_verified": false,
+  "codex_executable": null,
   "stable_seconds": 30,
   "expected_min_seconds": 600,
   "unknown_seconds": 180,

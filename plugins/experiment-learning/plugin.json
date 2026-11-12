@@ -20,7 +20,7 @@
       "interface": {
         "displayName": "Experiment Learning",
         "shortDescription": "Learn while experiments run",
-        "longDescription": "Use short learning cards while a local experiment is running and the main Codex is explicitly waiting for results. A separate learning conversation keeps explanations and progress together. The local Python monitor checks process identity, elapsed time and waiting markers without calling a model while polling. Card delivery and learning replies use your signed-in Codex account. Windows only; requires Python and a Codex CLI with queue support. Project integration and desktop-open startup are opt-in. Remote jobs, phone delivery and other history formats are not guaranteed.",
+        "longDescription": "Use short learning cards while a local experiment is running and the main Codex is explicitly waiting for results. A separate learning conversation keeps explanations and progress together. The local Python monitor checks process identity, elapsed time and waiting markers without calling a model while polling. Card delivery and learning replies use your signed-in Codex account. Windows only; requires Python, a complete native Codex CLI with queue support and a running local daemon. Project integration and desktop-open startup are opt-in. Remote jobs, phone delivery and other history formats are not guaranteed.",
         "developerName": "lihao10180419",
         "category": "Productivity",
         "capabilities": [
@@ -42,7 +42,7 @@
       },
       "requires_local_executor": true,
       "publication": {
-        "release_notes": "0.1.1: explicit local-execution metadata, original icons, self-contained documentation, validated card imports and recovery controls, a separate submission ZIP, confirmed all-available-country/no-commerce declarations and documented native delivery verification limits.",
+        "release_notes": "0.1.1: Desktop-only skills metadata and verified public policy/support pages; complete-CLI selection and read-only daemon diagnostics; explicit backend startup; validated cards and recovery controls; separate upload ZIP; 20 offline tests plus real native success/failure and temporary installation acceptance.",
         "countries": []
       },
       "review": {

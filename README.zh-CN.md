@@ -10,7 +10,7 @@
 
 ## 安装
 
-当前支持 Windows 10/11、Python 3.10+、已登录的 Codex 桌面应用，以及提供 `queue` 的 Codex CLI。原型实测版本为 `0.167.0-alpha.3.2`；其他版本必须通过自己的连接测试。当前不支持 macOS/Linux 或远程调度作业。
+当前支持 Windows 10/11、Python 3.10+、已登录的 Codex 桌面应用、提供 `queue` 的完整原生 CLI，以及可用本机 daemon。CLI/daemon `0.167.2` 已通过原生验收；每次新安装仍须通过自己的连接测试。当前不支持 macOS/Linux 或远程调度作业。
 
 ```powershell
 codex plugin marketplace add https://github.com/lihao10180419/learning-when-waiting-for-experiment.git
@@ -65,4 +65,4 @@ python tools/build_release.py
 
 MIT © 2026 lihao10180419 and contributors。
 
-0.1.1 分别提供源码 ZIP 和仅含一个插件的公共目录上传候选 ZIP。发布者已确认个人显示名 lihao10180419、全部可用地区和不涉及插件收费；四个公开资料链接已验证。原生投递验收及本机插件适用性仍待解决。详细材料见[送审准备](docs/SUBMISSION.md)。
+0.1.1 分别提供源码 ZIP 和仅含一个插件的公共目录上传候选 ZIP。发布者已确认个人显示名 lihao10180419、全部可用地区和不涉及插件收费；四个公开资料链接已验证；新 profile 原生投递、成功/失败提醒和实际本地安装验收均已通过。适用官方 Desktop-only 纯技能提交通道；平台认证、扫描和本人声明仍须完成。详见[送审准备](docs/SUBMISSION.md)和[个人认证步骤](docs/IDENTITY_AND_SUBMISSION.md)。

@@ -212,6 +212,65 @@ class PluginTests(unittest.TestCase):
             self.assertTrue(self.s.load_config()["connection_verified"])
             self.assertEqual(self.s.load_config()["verified_event_id"], did)
 
+    def test_selected_native_cli_preserves_profile_but_requires_new_probe(self):
+        executable = self.profile / "packaged codex.exe"
+        executable.write_bytes(b"test fixture, never executed")
+        config = self.s.load_config()
+        target = str(uuid.uuid4())
+        config.update(thread_id=target, connection_verified=True, verified_event_id="old-proof")
+        self.s.save_config(config)
+        responses = [subprocess.CompletedProcess([],0,"codex-cli 0.167.2\n",""),
+                     subprocess.CompletedProcess([],0,"queue --thread --message --resume","")]
+        with patch.object(self.m.subprocess, "run", side_effect=responses), patch("sys.stdout",new_callable=io.StringIO):
+            self.assertEqual(self.m.set_cli(str(executable)), 0)
+        selected = self.s.load_config()
+        self.assertEqual(selected["thread_id"], target)
+        self.assertEqual(selected["codex_executable"], str(executable.resolve()))
+        self.assertFalse(selected["connection_verified"])
+        self.assertNotIn("verified_event_id", selected)
+        self.a.CONFIG.update(selected)
+        with self.a.connect() as db:
+            did = self.a.queue_delivery(db, "selected-cli", "connection", "literal ; & $() message\nnext line")
+            expected = db.execute("SELECT message FROM deliveries WHERE id=?", (did,)).fetchone()[0]
+        with patch.object(self.a.subprocess, "run", return_value=subprocess.CompletedProcess([],0,"Queued message fixture-id for thread", "")) as send:
+            self.a.deliver(did)
+        argv = send.call_args.args[0]
+        self.assertEqual(argv[0], str(executable.resolve()))
+        self.assertEqual(argv[argv.index("--thread")+1], target)
+        self.assertEqual(argv[argv.index("--message")+1], expected)
+        self.assertFalse(send.call_args.kwargs.get("shell", False))
+
+    def test_backend_diagnostics_require_running_status_and_send_no_queue(self):
+        import codex_client
+        cases = [(0,'{"status":"running","cliVersion":"test","appServerVersion":"test"}',True),
+                 (0,'{"status":"stopped"}',False),(0,'{}',False),(1,'',False),(0,'not JSON',False)]
+        for code, output, expected in cases:
+            with self.subTest(output=output), patch.object(codex_client.subprocess,"run",return_value=subprocess.CompletedProcess([],code,output,"")) as call:
+                report = codex_client.backend_status("native-codex.exe")
+                self.assertEqual(report["reachable"], expected)
+                self.assertEqual(call.call_args.args[0],["native-codex.exe","app-server","daemon","version"])
+
+    def test_backend_start_is_explicit_idempotent_and_learning_guarded(self):
+        executable = self.profile / "codex.exe"
+        executable.write_bytes(b"test fixture, never executed")
+        config = self.s.load_config()
+        config["codex_executable"] = str(executable)
+        self.s.save_config(config)
+        with patch.object(self.m.subprocess,"run",return_value=subprocess.CompletedProcess([],0)) as call:
+            self.assertEqual(self.m.backend("start"),0)
+            self.assertEqual(call.call_args.args[0],[str(executable.resolve()),"app-server","daemon","start"])
+        config["thread_id"] = str(uuid.uuid4())
+        self.s.save_config(config)
+        with patch.dict(os.environ,{"CODEX_THREAD_ID":config["thread_id"]}), patch.object(self.m.subprocess,"run",side_effect=AssertionError("Learning thread must not start services")):
+            with self.assertRaises(ValueError):
+                self.m.backend("start")
+        if os.name == "nt":
+            from codex_client import resolve_cli
+            wrapper = self.profile / "codex.cmd"
+            wrapper.write_bytes(b"fixture")
+            with self.assertRaises(ValueError):
+                resolve_cli({"codex_executable":str(wrapper)})
+
     def test_integration_preserves_other_instructions_and_is_idempotent(self):
         project = self.profile / "project"
         project.mkdir()

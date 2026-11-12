@@ -8,6 +8,8 @@ The plugin requires your own compatible Windows, Python and signed-in Codex envi
 
 The workflow relies on explicit waiting markers, local process checks, the installed CLI and supported local history records. Network outages, client updates or queue delays can prevent or delay replies. Check the experiment's real output and exit code before deciding what to do next. Pause/Stop affect learning monitoring; they do not cancel experiments. Learning cards are general educational material, and the user should check their relevance and correctness for the task.
 
+Background native delivery requires a complete native Codex CLI and a reachable local daemon. The user explicitly selects or starts that shared backend when needed; plugin monitoring does not install/start it automatically. Stopping this plugin does not stop a shared Codex service. See [SETUP.md](SETUP.md) for diagnostics and the supported setup flow.
+
 Local data practices, retention and deletion controls are described in [PRIVACY.md](PRIVACY.md). Support is described in [SUPPORT.md](SUPPORT.md). Public listing availability, owner identity verification, service access and directory approval are separate from possession of this source or ZIP.
 
 Updates can change compatibility. Before upgrading or uninstalling, stop this profile's monitor, disable optional startup and follow the setup instructions to refresh or remove marked integration paths. Existing profile data is preserved unless you choose to delete it.

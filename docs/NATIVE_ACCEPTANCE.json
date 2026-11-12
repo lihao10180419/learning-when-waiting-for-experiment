@@ -1,0 +1,62 @@
+{
+  "date": "2026-11-12",
+  "version": "0.1.1",
+  "evidence_type": "local acceptance, not OpenAI review approval",
+  "python": "3.14.7",
+  "native_cli": "0.167.2",
+  "local_daemon": "0.167.2",
+  "offline_tests": {
+    "passed": 20,
+    "seconds": 25.049,
+    "model_messages_sent": 0
+  },
+  "initial_native_attempt": {
+    "probe_status": "queued_accepted",
+    "reply_confirmed": false,
+    "timeout_seconds": 60,
+    "automatic_resend": false
+  },
+  "environment_resolution": {
+    "complete_cli_installed_in_ignored_workspace": true,
+    "native_managed_daemon_started": true,
+    "desktop_cli_or_system_path_replaced": false,
+    "desktop_app_restarted": false,
+    "existing_experiments_restarted": false
+  },
+  "fresh_zip_acceptance": {
+    "tested_zip_sha256": "dca937da76a85d3fffc4e35da8895ee483a8d9dc554b3c6005ac8b9e912b869d",
+    "fresh_profile": true,
+    "probe_status": "reply_confirmed",
+    "simulation_seconds": 15,
+    "process_confirmed": true,
+    "card_reply_elapsed_seconds": 11.084,
+    "card_reply_observed_while_original_os_process_live": true,
+    "card_count": 1,
+    "first_request_and_reply_withheld_answer": true,
+    "experiment_exit_code": 0,
+    "stdout_preserved": true,
+    "completion_return_status": "reply_confirmed",
+    "own_monitor_stopped": true
+  },
+  "actual_install_acceptance": {
+    "installed_files_matched": 24,
+    "skill_files_present": 2,
+    "experiment_exit_code": 7,
+    "stdout_preserved": true,
+    "stderr_preserved": true,
+    "failure_return_status": "reply_confirmed",
+    "own_monitor_stopped": true,
+    "temporary_install_removed": true,
+    "temporary_marketplace_removed": true
+  },
+  "runtime_source_sha256": {
+    "scripts/assistant.py": "13d114f4c5e9be3141ecffd8cc715a46f9bf42ae5946206ff2bdbcd84c735eff",
+    "scripts/codex_autostart.py": "bb79ebd56296e602ed69aa31d03588037a3fff039b5bd63123eaf9595de39eb3",
+    "scripts/codex_client.py": "5442ad0b766c079357432593ee6499112c8ee1507069c3a2c7f21120feb49f0a",
+    "scripts/install_autostart.ps1": "560c328a2f581ed2b569ca252b9d3921db60a548afc4db41b3bdb00e736312ba",
+    "scripts/manage.py": "bbf540432f1e73f12518ca468913db956b871602776395d4d553a3a540508d01",
+    "scripts/settings.py": "fe2cd2d6661c845761fa28d15d1ed01f31a2d9ea8edb548423ed6d2414af7e73",
+    "scripts/simulate.py": "8158844abdca243a016d4ec0d0601fe3fc58010b36e153d5dc2edd8a6e2b13c5"
+  },
+  "scope_note": "Raw commands, personal profile paths, thread UUIDs and conversation records are retained privately and excluded. Runtime hashes tie this record to the tested code; they do not imply every possible runtime scenario was tested."
+}

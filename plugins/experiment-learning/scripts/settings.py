@@ -25,6 +25,8 @@ def load_config():
         config.update(read_json(CONFIG_PATH))
     if config["thread_id"] is not None:
         config["thread_id"] = str(uuid.UUID(config["thread_id"]))
+    if config.get("codex_executable") is not None and (not isinstance(config["codex_executable"], str) or not config["codex_executable"].strip()):
+        raise ValueError("codex_executable must be a non-empty path string or null")
     for key in ("stable_seconds", "expected_min_seconds", "unknown_seconds", "poll_seconds", "queue_timeout_seconds", "reply_timeout_seconds"):
         if not isinstance(config[key], (int, float)) or not math.isfinite(config[key]) or config[key] <= 0:
             raise ValueError(f"{key} must be a positive finite number")

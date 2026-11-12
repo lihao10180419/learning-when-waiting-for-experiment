@@ -21,6 +21,7 @@ import uuid
 
 ROOT = Path(__file__).resolve().parent
 from settings import DATA_HOME, CONFIG_PATH, CARDS_PATH, CODEX_STATE_HOME, load_config, load_cards
+from codex_client import resolve_cli
 RUNTIME = DATA_HOME / "runtime"
 DB = RUNTIME / "state.sqlite3"
 CONFIG = load_config()
@@ -165,7 +166,7 @@ def deliver(delivery_id):
         if not CONFIG.get("thread_id"):
             raise ValueError("No learning thread configured")
         result = subprocess.run(
-            [shutil.which("codex") or "codex", "queue", "--thread", CONFIG["thread_id"],
+            [resolve_cli(CONFIG), "queue", "--thread", CONFIG["thread_id"],
              "--message", row["message"], "--resume"],
             cwd=ROOT.parent, capture_output=True, text=True, encoding="utf-8", errors="replace",
             timeout=CONFIG["queue_timeout_seconds"],

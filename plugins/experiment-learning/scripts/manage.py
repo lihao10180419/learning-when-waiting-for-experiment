@@ -14,6 +14,7 @@ import uuid
 
 ROOT = Path(__file__).resolve().parent
 from settings import CONFIG_PATH, CARDS_PATH, DATA_HOME, CODEX_STATE_HOME, initialize, load_config, save_config, paths, read_json, validate_cards
+from codex_client import resolve_cli, backend_status
 
 ENGINE_ACTIONS = {"run", "launch", "waiting", "busy", "attention", "result", "cancel", "start", "stop", "status", "pause", "resume", "today-off", "done", "later", "cleanup"}
 START = "<!-- experiment-learning-plugin:start -->"
@@ -137,20 +138,57 @@ def integrate(scope, project=None, remove=False):
 
 def doctor():
     config = load_config()
-    binary = shutil.which("codex")
+    binary = resolve_cli(config)
     report = {"platform": sys.platform, "python": sys.version.split()[0], "paths": paths(),
               "thread_bound": bool(config.get("thread_id")), "connection_verified": config.get("connection_verified", False),
-              "codex_found": bool(binary), "queue_supported": False}
-    if binary:
+              "codex_found": bool(shutil.which(binary)), "codex_executable": binary, "queue_supported": False}
+    if report["codex_found"]:
         for command, key in (([binary, "--version"], "codex_version"), ([binary, "queue", "--help"], "queue_help")):
             completed = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=12)
             if key == "codex_version":
                 report[key] = completed.stdout.strip()
             else:
-                report["queue_supported"] = completed.returncode == 0 and "--thread" in completed.stdout and "--message" in completed.stdout
+                report["queue_supported"] = completed.returncode == 0 and all(flag in completed.stdout for flag in ("--thread", "--message", "--resume"))
+    report["local_daemon"] = backend_status(binary)
+    report["real_reply_still_required"] = True
     report["supported_platform"] = os.name == "nt"
     print(json.dumps(report, ensure_ascii=False, indent=2))
-    return 0 if report["supported_platform"] and report["queue_supported"] else 1
+    return 0 if report["supported_platform"] and report["queue_supported"] and report["local_daemon"]["reachable"] else 1
+
+
+def set_cli(executable):
+    selected = resolve_cli({"codex_executable": executable})
+    config = load_config()
+    a = engine()
+    with a.connect() as db:
+        if a.monitor_running(db):
+            raise ValueError("Stop this profile's monitor before changing its CLI; experiments keep running")
+    version = subprocess.run([selected, "--version"], capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=12)
+    help_result = subprocess.run([selected, "queue", "--help"], capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=12)
+    if version.returncode or "codex-cli " not in version.stdout or help_result.returncode or not all(flag in help_result.stdout for flag in ("--thread", "--message", "--resume")):
+        raise ValueError("Selected executable does not provide the required Codex CLI queue interface")
+    config.update(codex_executable=selected, connection_verified=False)
+    config.pop("verified_at", None)
+    config.pop("verified_event_id", None)
+    save_config(config)
+    print(json.dumps({"codex_executable": selected, "version": version.stdout.strip(), "connection_verified": False,
+                      "next": "Check backend status/start, then verify a real probe"}, ensure_ascii=False))
+    return 0
+
+
+def backend(action):
+    config = load_config()
+    binary = resolve_cli(config)
+    if action == "status":
+        status = backend_status(binary)
+        print(json.dumps(status, ensure_ascii=False, indent=2))
+        return 0 if status["reachable"] else 1
+    if config.get("thread_id") and config["thread_id"] == os.environ.get("CODEX_THREAD_ID"):
+        raise ValueError("Do not start backend services from the learning thread")
+    # Explicit user action only. The monitor and watcher never start/restart a
+    # Codex daemon. This command is idempotent and never invokes stop/update.
+    result = subprocess.run([binary, "app-server", "daemon", "start"], timeout=60)
+    return result.returncode
 
 
 def cards(action, source=None):
@@ -190,6 +228,10 @@ def main():
         subs.add_parser(name)
     q = subs.add_parser("bind")
     q.add_argument("--thread", required=True)
+    q = subs.add_parser("set-cli", help="Select an existing complete native Codex CLI for this profile")
+    q.add_argument("--executable", required=True)
+    q = subs.add_parser("backend", help="Local-only diagnostics, or an explicitly requested daemon start")
+    q.add_argument("backend_action", choices=("status", "start"))
     q = subs.add_parser("probe", help="One explicit model-backed connection test; accepted queue is not a confirmed reply")
     q.add_argument("--timeout", type=float, default=60)
     q.add_argument("--check-event", help="Read an existing probe result without sending another model message")
@@ -211,6 +253,10 @@ def main():
         return 0
     if args.command == "doctor":
         return doctor()
+    if args.command == "set-cli":
+        return set_cli(args.executable)
+    if args.command == "backend":
+        return backend(args.backend_action)
     if args.command == "bind":
         initialize()
         bind(args.thread)

@@ -14,6 +14,22 @@ python $learningCli doctor
 
 从源码仓库执行时，把入口改为 `plugins/experiment-learning/scripts/manage.py`。送审 ZIP 已包含这份说明，无需另行下载仓库。
 
+### 确认原生投递后端
+
+原生后台投递依赖可用的 Codex 本机 daemon。`doctor` 现在会只读检查 CLI 的 queue 参数和 daemon 状态；这些诊断不发送模型消息。仅安装桌面应用、或者 PATH 中能找到 `codex`，不保证具备完整的独立 CLI 安装包。
+
+如果出现 `this CLI has no complete local package`，先按[官方 CLI 安装说明](https://learn.chatgpt.com/docs/codex/cli)准备完整的独立 CLI。不要修改桌面应用附带文件或强制重启应用。若当前 PATH 仍优先找到桌面附带 CLI，可为本 profile 明确选择完整安装包里的原生 `codex.exe`：
+
+```powershell
+python $learningCli set-cli --executable 'YOUR_PACKAGED_CODEX_EXE'
+python $learningCli backend status
+# 仅在明确同意启动本机常驻服务后执行：
+python $learningCli backend start
+python $learningCli doctor
+```
+
+`set-cli` 只修改当前 profile，不改系统 PATH，要求原生可执行文件并核对 `--version` / queue 接口；拒绝命令脚本包装器。更换后须重新通过真实 probe，不继承旧的验证结论。`backend start` 是显式、幂等的启动请求，已有服务时不重启；它不调用 stop/update。后台监测器与桌面打开监听器不会自动安装、启动或重启 Codex daemon。服务由 Codex 自身管理，停止本插件不会停止共享的 Codex 服务。
+
 创建一个独立、持久的 Codex 学习任务“实验间隙学习”。让它只解释卡片、保存学习上下文，不运行实验、不修改项目、不调用本助手。通过客户端支持的工具获取精确 UUID；当前主任务、CLI 的最后一个任务和手机 ChatGPT 对话不能相互混用。
 
 把下面占位符替换成刚创建的学习 UUID：
@@ -25,7 +41,7 @@ python $learningCli probe
 
 `probe` 会产生一次真实模型请求。收到 `reply_confirmed` 才完成连接验证；仅 `queued_accepted` 的退出码为 3，表示回复尚未验证。检查桌面应用是否正常运行、登录、联网，以及精确目标会话是否收到对应编号。不要无限重发。可执行 `probe --check-event LRN_EVENT_ID` 只复查先前事件，不再发送消息；迟到的真实回复也能完成验证。对当前不支持的历史格式，先保留未验证状态。
 
-若警告无法 resume、需要 local daemon，说明目标未加载且 CLI 不能自动恢复它。仅有桌面应用主进程并不足以证明每个后台学习对话都能被唤醒。先通过正常客户端打开/恢复精确学习对话，或按官方 CLI 方式配置自己的本机 daemon，再只读复查原事件。插件不会为此重启桌面应用、改变 daemon 或改用私有聊天接口。官方说明见 [codex queue](https://learn.chatgpt.com/docs/developer-commands#codex-queue)。
+若警告无法 resume、需要 local daemon，说明目标未加载且 CLI 不能自动恢复它。仅有桌面应用主进程并不足以证明每个后台学习对话都能被唤醒。先按上面的显式后端设置准备可用服务，或通过正常客户端恢复精确学习对话，再只读复查原事件。未发生实际回复时不要重复提交探针。官方说明见 [codex queue](https://learn.chatgpt.com/docs/developer-commands#codex-queue)。
 
 ## 自动接入范围
 
