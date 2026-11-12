@@ -51,4 +51,4 @@ The public package introduces per-user profiles and fresh binding. Its fresh-pro
 - macOS/Linux deployment, remote SSH/scheduler job state, GPU training or large model downloads.
 - Other local history formats, full concurrency/restart pressure testing, phone pairing or OS toast delivery.
 
-GitHub repository upload is source distribution. Keeping it private limits installation to accounts with Git access; making it public is a separate owner choice.
+The owner subsequently authorized public source distribution. The repository was changed to public with Issues enabled; anonymous HTTPS reads of all four listing destinations returned expected content, recorded in PUBLIC_LINKS.md. This publication change does not resolve the native probe or imply directory approval.

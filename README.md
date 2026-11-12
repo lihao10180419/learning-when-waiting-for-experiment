@@ -27,7 +27,7 @@ Start a new Codex conversation and request:
 
 > Use $experiment-learning-setup to set up a separate learning thread, verify a real reply, and integrate the assistant into my local projects. Also enable startup when I open Codex.
 
-Installation makes the skills available; setup binds your own UUID and opts into project integration and startup. A private repository requires Git access. Availability of custom marketplaces can depend on the client and workspace policy. GitHub distribution does not imply listing or approval in OpenAI's public Plugins Directory.
+Installation makes the skills available; setup binds your own UUID and opts into project integration and startup. This repository is public. Availability of custom marketplaces can depend on the client and workspace policy. GitHub distribution does not imply listing or approval in OpenAI's public Plugins Directory.
 
 For a local checkout:
 
@@ -78,4 +78,4 @@ MIT © 2026 lihao10180419 and contributors.
 
 Packaging follows the [official OpenAI plugin guide](https://developers.openai.com/plugins/build/plugins); command and hook behavior should be checked against the installed CLI and [official CLI reference](https://learn.chatgpt.com/docs/cli/reference).
 
-Version 0.1.1 builds separate `-source.zip` and `-submission.zip` artifacts. The submission ZIP contains one plugin at its root. Individual publisher `lihao10180419` has selected all available countries/regions and no plugin commerce. Native delivery verification, public URL verification and directory eligibility remain separate preparation checks; see [SUBMISSION.md](docs/SUBMISSION.md).
+Version 0.1.1 builds separate `-source.zip` and `-submission.zip` artifacts. The submission ZIP contains one plugin at its root. Individual publisher `lihao10180419` has selected all available countries/regions and no plugin commerce. All four listing URLs are publicly verified; native delivery verification and desktop-directory eligibility remain unresolved. See [SUBMISSION.md](docs/SUBMISSION.md).

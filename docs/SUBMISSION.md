@@ -29,9 +29,9 @@
 
 本人于 2026-11-12 确认个人发布，显示名使用 **lihao10180419**；面向**全部可用国家和地区**；插件**不收费、不涉及支付或购买**；保留当前图标、不另设品牌色。已在两份清单写入 `publication.countries: []`、`review.commerce: false` 及具体说明。完整决定见 [OWNER_DECISIONS.md](OWNER_DECISIONS.md)。
 
-本人授权公开现有 GitHub 仓库及历史，以仓库文档和 Issues 提供介绍、支持、[隐私政策](../plugins/experiment-learning/docs/PRIVACY.md)与[使用条款](../plugins/experiment-learning/docs/TERMS.md)。公开操作及四个匿名 HTTPS 链接的实际访问结果仍需单独核对；未验证前不把 URL 写入清单。
+已按本人授权公开现有 GitHub 仓库及历史，开启 Issues，以仓库文档提供介绍、支持、[隐私政策](../plugins/experiment-learning/docs/PRIVACY.md)与[使用条款](../plugins/experiment-learning/docs/TERMS.md)。四个 HTTPS 页面均以无登录、无 Cookie、无令牌的请求读取到正确正文，并已写入两份清单，验证记录见 [PUBLIC_LINKS.md](PUBLIC_LINKS.md)。
 
-平台身份认证由本人完成。原生投递验收及本机执行适用性仍待解决；**不能标为可直接送审**。`validate_release.py` 的 listing_gaps 不是完整的身份/法律审核，不推断任何已通过验证的事实。
+发布资料字段已补齐。平台身份认证由本人完成；原生投递验收及本机执行适用性仍待解决，**不能标为可直接送审**。`validate_release.py` 的空 listing_gaps 仅代表所检查字段齐全，不代表身份验证、功能验收或官方审核通过。
 
 ## 审查人员复现
 

@@ -21,7 +21,11 @@
       "Pause learning reminders for today."
     ],
     "composerIcon": "./assets/icon.png",
-    "logo": "./assets/logo.png"
+    "logo": "./assets/logo.png",
+    "websiteURL": "https://github.com/lihao10180419/learning-when-waiting-for-experiment",
+    "supportURL": "https://github.com/lihao10180419/learning-when-waiting-for-experiment/blob/main/plugins/experiment-learning/docs/SUPPORT.md",
+    "privacyPolicyURL": "https://github.com/lihao10180419/learning-when-waiting-for-experiment/blob/main/plugins/experiment-learning/docs/PRIVACY.md",
+    "termsOfServiceURL": "https://github.com/lihao10180419/learning-when-waiting-for-experiment/blob/main/plugins/experiment-learning/docs/TERMS.md"
   },
   "author": {
     "name": "lihao10180419"

@@ -10,4 +10,4 @@ Users explicitly opt into a marked user/project AGENTS.md integration and, optio
 
 Could you confirm whether this local-execution workflow is eligible for the public Plugins Directory for Codex, and whether it requires a desktop-specific review, allowlist or supported alternative to the current queue/history adapter? In particular, we would like confirmation before treating the separate learning conversation's automatically queued reminders as eligible directory behavior.
 
-Source repository: https://github.com/lihao10180419/learning-when-waiting-for-experiment (currently private; grant access separately if requested). Package and verification records are available from the owner. No statement here implies approval or guaranteed future compatibility.
+Public source repository: https://github.com/lihao10180419/learning-when-waiting-for-experiment . Package and verification records are available from the owner. The owner has selected individual publisher lihao10180419, all available countries/regions and no commerce. No statement here implies approval or guaranteed future compatibility.

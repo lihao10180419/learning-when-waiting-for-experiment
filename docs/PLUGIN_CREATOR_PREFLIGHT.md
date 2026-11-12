@@ -19,11 +19,11 @@ This skill is an instruction workflow, not an OpenAI approval service. The repos
 | Native clean-profile verification | Blocked: one actual probe remained queued_accepted for 60s; target notLoaded and no usable local daemon; no repeat sent; see VERIFICATION.md |
 | Publisher display identity | Owner confirmed: individual, lihao10180419. Actual OpenAI identity verification remains with owner |
 | Countries and commerce | Confirmed and written into both manifests: all available countries/regions (`countries: []`), commerce=false, no plugin payments/purchases |
-| Public listing URLs | Pending: repository remains private; introduction/support/privacy/terms content drafted but not verified public pages |
-| Policy/support publication choice | Owner authorized public repository documentation and GitHub Issues; publication/access verification tracked separately |
+| Public listing URLs | Passed: repository public, Issues enabled; all four exact destinations returned 200 and expected rendered content without authentication. Written into both manifests; see PUBLIC_LINKS.md |
+| Policy/support publication choice | Published as authorized: repository documentation and GitHub Issues; individual publisher, retention/deletion and no-commerce wording updated |
 | Desktop-directory eligibility | Pending OpenAI confirmation; inquiry prepared in ELIGIBILITY.md |
 | Identity/scans/attestations | Not performed: Portal actions and personal legal/policy declarations remain with the owner |
 
-**Readiness: local technical candidate prepared; not ready to submit.** The official workflow explicitly says “An incomplete ZIP is not ready to submit.” Owner publication facts are now confirmed. Resolve verified public links, native verification and desktop eligibility before handing off a final ready-to-submit archive. Rebuild and inspect the ZIP after metadata/policy edits; file hashes belong to that exact build.
+**Readiness: listing/publication preparation complete; not ready to submit.** The official workflow explicitly says “An incomplete ZIP is not ready to submit.” Owner facts and public links are confirmed. Native delivery verification and desktop-directory eligibility remain unresolved. Actual OpenAI identity verification, scans and personal attestations are separate Portal requirements. Rebuild and inspect the ZIP after metadata/policy edits; file hashes belong to that exact build.
 
 Use [SUBMISSION.md](SUBMISSION.md) for the owner handoff and [VERIFICATION.md](VERIFICATION.md) for the actual test scope. The owner chose to keep existing icons without optional dark-specific assets or brand colors.

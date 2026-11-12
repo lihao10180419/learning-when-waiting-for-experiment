@@ -21,7 +21,7 @@ codex plugin add experiment-learning@experiment-learning-community
 
 > 使用 $experiment-learning-setup 配置实验等待学习助手：创建独立学习对话，验证真实回复，接入我的本机项目，并启用打开 Codex 时自动启动。
 
-插件安装负责加载技能；绑定会话、全项目说明和 Windows 自动启动由设置流程按你的选择完成。私有 GitHub 仓库需要 Git 访问权限。连接了 GitHub 不代表命令行 Git 已自动获得访问权限。客户端和工作区策略也可能限制自定义 marketplace。
+插件安装负责加载技能；绑定会话、全项目说明和 Windows 自动启动由设置流程按你的选择完成。本仓库已公开，可匿名读取源码和公开文档。客户端和工作区策略可能限制自定义 marketplace。
 
 本项目通过 GitHub marketplace 分发，不代表已上架或通过官方公共插件目录审核。
 
@@ -65,4 +65,4 @@ python tools/build_release.py
 
 MIT © 2026 lihao10180419 and contributors。
 
-0.1.1 分别提供源码 ZIP 和仅含一个插件的公共目录上传候选 ZIP。发布者已确认个人显示名 lihao10180419、全部可用地区和不涉及插件收费；原生投递验收、公开链接验证及本机插件适用性仍须核对。详细材料见[送审准备](docs/SUBMISSION.md)。
+0.1.1 分别提供源码 ZIP 和仅含一个插件的公共目录上传候选 ZIP。发布者已确认个人显示名 lihao10180419、全部可用地区和不涉及插件收费；四个公开资料链接已验证。原生投递验收及本机插件适用性仍待解决。详细材料见[送审准备](docs/SUBMISSION.md)。
