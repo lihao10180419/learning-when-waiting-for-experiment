@@ -19,21 +19,19 @@
 | 名称 | Experiment Learning（19 字符） |
 | 副标题 | Learn while experiments run（27 字符） |
 | 分类 | Productivity |
-| 发布者 | 保留原作者 GitHub 标识；实际认证个人/企业名称待本人确认 |
+| 发布者 | 本人确认：个人，公开显示名 lihao10180419；平台身份认证待本人完成 |
 | 能力 | 本机实验监测、等待时学习卡片、学习进度保存 |
 | 执行 | `requires_local_executor: true`；Windows、Python、本机 CLI |
 
 英文完整描述和默认提示已写入两份清单。内置卡片为中文入门示例，支持用户自行导入 JSON 卡片，不声明完整课程、多语言教学保证或远程作业支持。
 
-## 必须补齐的发布事实
+## 已确认的发布设置
 
-1. 本人确认认证个人/企业及希望显示的发布者名称。
-2. 本人确认全部可用国家/地区，或指定国家代码。未知时不写 `countries`；只有明确选择全部才使用空数组。
-3. 本人确认是否涉及支付/购买，涉及时说明内容与支付位置。未知时不代填 commerce 声明。
-4. 本人审核 [隐私草案](../plugins/experiment-learning/docs/PRIVACY.md)、[支持草案](../plugins/experiment-learning/docs/SUPPORT.md)、[条款草案](../plugins/experiment-learning/docs/TERMS.md)，确认公开支持方式与实际数据实践。
-5. 四个无须登录即可访问的 HTTPS 页面：插件介绍、支持、隐私政策、使用条款。当前仓库为私有，文件草案不算已发布页面。准备好页面后再由仓库所有者决定公开仓库或另行托管文档；不猜测 GitHub Pages 地址。真实访问并核对内容后才能写入四个 URL 字段。
+本人于 2026-11-12 确认个人发布，显示名使用 **lihao10180419**；面向**全部可用国家和地区**；插件**不收费、不涉及支付或购买**；保留当前图标、不另设品牌色。已在两份清单写入 `publication.countries: []`、`review.commerce: false` 及具体说明。完整决定见 [OWNER_DECISIONS.md](OWNER_DECISIONS.md)。
 
-这些事实仍待确认时，ZIP 可以通过结构检查，但**不能标为可直接送审**。`validate_release.py` 的 listing_gaps 不是完整的身份/法律审核，不推断任何已通过验证的事实。
+本人授权公开现有 GitHub 仓库及历史，以仓库文档和 Issues 提供介绍、支持、[隐私政策](../plugins/experiment-learning/docs/PRIVACY.md)与[使用条款](../plugins/experiment-learning/docs/TERMS.md)。公开操作及四个匿名 HTTPS 链接的实际访问结果仍需单独核对；未验证前不把 URL 写入清单。
+
+平台身份认证由本人完成。原生投递验收及本机执行适用性仍待解决；**不能标为可直接送审**。`validate_release.py` 的 listing_gaps 不是完整的身份/法律审核，不推断任何已通过验证的事实。
 
 ## 审查人员复现
 

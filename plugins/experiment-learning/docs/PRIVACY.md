@@ -1,6 +1,6 @@
 # Data and privacy — v0.1.1
 
-Publication draft, 12 November 2026. The maintainer must confirm the public publisher and support contact before using this page as a public listing policy. This describes the packaged implementation; it does not replace OpenAI's or GitHub's policies.
+Updated 12 November 2026. Experiment Learning is maintained by individual publisher `lihao10180419`. Support and privacy questions can be raised through the project's [GitHub Issues](https://github.com/lihao10180419/learning-when-waiting-for-experiment/issues). This policy describes the packaged implementation; OpenAI and GitHub provide their own services under their respective policies.
 
 The monitor and desktop-open watcher are local Python programs. They do not poll an LLM, collect browser cookies, access private chat APIs, or need a separate API key.
 
@@ -26,4 +26,4 @@ There is no automatic retention limit. Configuration, card backups, database rec
 
 Use `paths` to locate your profile. Pause/Stop suppress monitoring without cancelling experiments; disable optional startup and remove the plugin's instruction block when uninstalling. After all jobs using that profile have ended and its monitor/watcher have stopped, the user can back up or delete that profile directory to remove its local records. Delete any instruction backups separately if they contain paths or thread IDs. Data already sent to Codex or posted on GitHub must be managed using the respective service's controls.
 
-Support and privacy questions: see [SUPPORT.md](SUPPORT.md). A publicly accessible support page and confirmed publisher identity are still required before directory submission. Changes to these practices must be reflected here and in the published policy before a changed version is submitted.
+Support and privacy questions: see [SUPPORT.md](SUPPORT.md). Changes to these practices must be reflected in this policy before a changed version is submitted. The repository publisher handle is not a claim that OpenAI identity verification or directory approval has been completed.

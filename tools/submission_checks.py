@@ -90,6 +90,12 @@ def inspect_plugin(plugin):
     review_prompts = ext.get("review", {}).get("prompts", [])
     if not isinstance(review_prompts, list) or len(review_prompts) > 20 or any(not isinstance(p, str) or not p.strip() or len(p) > 4000 for p in review_prompts):
         raise ValueError("Invalid reviewer prompts")
+    review = ext.get("review", {})
+    if "commerce" in review and not isinstance(review["commerce"], bool):
+        raise ValueError("Commerce declaration must be a boolean")
+    countries = ext.get("publication", {}).get("countries")
+    if countries is not None and (not isinstance(countries, list) or any(not isinstance(c, str) or not re.fullmatch(r"[A-Z]{2}", c) for c in countries)):
+        raise ValueError("Countries must be uppercase country codes, or [] for all available")
     gaps = [f"Verified public {key}" for key in URL_FIELDS if key not in interface]
     if "countries" not in ext.get("publication", {}):
         gaps.append("Owner's supported-country declaration")

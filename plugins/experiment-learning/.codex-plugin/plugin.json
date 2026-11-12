@@ -31,7 +31,8 @@
     "com.openai": {
       "onboardingSkill": "./skills/experiment-learning-setup/SKILL.md",
       "publication": {
-        "release_notes": "0.1.1: desktop-only submission metadata, icons, self-contained policy and support materials, portable submission ZIP, stricter validation and clean-profile verification."
+        "release_notes": "0.1.1: explicit local-execution metadata, original icons, self-contained documentation, validated card imports and recovery controls, a separate submission ZIP, confirmed all-available-country/no-commerce declarations and documented native delivery verification limits.",
+        "countries": []
       },
       "review": {
         "prompts": [
@@ -40,7 +41,9 @@
           "Import my own JSON learning cards and check their prerequisites.",
           "Pause learning reminders without stopping my experiment.",
           "Can this monitor a job submitted over SSH? Explain the supported scope before taking action."
-        ]
+        ],
+        "commerce": false,
+        "commerce_description": "This plugin does not charge plugin fees, sell products, process payments or provide a purchase flow. Codex account usage remains subject to the user account plan and limits."
       }
     }
   }

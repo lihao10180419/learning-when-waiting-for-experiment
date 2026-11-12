@@ -78,4 +78,4 @@ MIT © 2026 lihao10180419 and contributors.
 
 Packaging follows the [official OpenAI plugin guide](https://developers.openai.com/plugins/build/plugins); command and hook behavior should be checked against the installed CLI and [official CLI reference](https://learn.chatgpt.com/docs/cli/reference).
 
-Version 0.1.1 builds separate `-source.zip` and `-submission.zip` artifacts. The submission ZIP contains one plugin at its root. Public listing identity, policy publication and directory eligibility must be resolved before submission; see [SUBMISSION.md](docs/SUBMISSION.md).
+Version 0.1.1 builds separate `-source.zip` and `-submission.zip` artifacts. The submission ZIP contains one plugin at its root. Individual publisher `lihao10180419` has selected all available countries/regions and no plugin commerce. Native delivery verification, public URL verification and directory eligibility remain separate preparation checks; see [SUBMISSION.md](docs/SUBMISSION.md).

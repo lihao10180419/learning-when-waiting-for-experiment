@@ -1,8 +1,8 @@
 # Support — Experiment Learning
 
-Publication draft, 12 November 2026. The planned support channel is the project's [GitHub Issues](https://github.com/lihao10180419/learning-when-waiting-for-experiment/issues). The repository is currently private; this is not yet a verified public support channel. The maintainer must publish a reachable page/contact before directory submission.
+Updated 12 November 2026. For installation problems, bug reports, feature requests or privacy questions, use the project's [GitHub Issues](https://github.com/lihao10180419/learning-when-waiting-for-experiment/issues). A GitHub account is needed to post an issue; this support page and existing public issues can be read without signing in.
 
-For setup, migration, all-project integration, startup and uninstalling, read [SETUP.md](SETUP.md). For data handling and deletion, read [PRIVACY.md](PRIVACY.md). Runtime code and these documents are maintained in [learning-when-waiting-for-experiment](https://github.com/lihao10180419/learning-when-waiting-for-experiment) by the repository maintainer, `lihao10180419`. The intended verified public publisher is awaiting owner confirmation.
+For setup, migration, all-project integration, startup and uninstalling, read [SETUP.md](SETUP.md). For data handling and deletion, read [PRIVACY.md](PRIVACY.md). Runtime code and these documents are maintained in [learning-when-waiting-for-experiment](https://github.com/lihao10180419/learning-when-waiting-for-experiment) by individual publisher `lihao10180419`. OpenAI identity verification and public-directory review are separate processes.
 
 When reporting a problem, include the plugin version, Windows/Python/Codex CLI versions, action taken, actual delivery state and a short redacted error. `doctor` checks local prerequisites and `status` shows monitor state. Read their output before sharing it: paths, job labels and thread identifiers can identify your workspace. Do not post account credentials, complete `config.json`, session JSONL, databases or experiment logs. No support response-time commitment is made by this version.
 

@@ -65,4 +65,4 @@ python tools/build_release.py
 
 MIT © 2026 lihao10180419 and contributors。
 
-0.1.1 分别提供源码 ZIP 和仅含一个插件的公共目录上传候选 ZIP。发布者、公开政策链接及本机插件适用性仍须确认，不能把本地结构验证等同于通过官方审核。详细材料见[送审准备](docs/SUBMISSION.md)。
+0.1.1 分别提供源码 ZIP 和仅含一个插件的公共目录上传候选 ZIP。发布者已确认个人显示名 lihao10180419、全部可用地区和不涉及插件收费；原生投递验收、公开链接验证及本机插件适用性仍须核对。详细材料见[送审准备](docs/SUBMISSION.md)。
