@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "experiment-learning",
-  "version": "0.1.0",
-  "description": "Windows local experiment-wait learning assistant for Codex, with zero-token process monitoring.",
+  "version": "0.1.1",
+  "description": "Short learning sessions during explicit local experiment waits in Codex.",
   "author": {
     "name": "lihao10180419"
   },
@@ -18,18 +18,35 @@
     "com.openai": {
       "onboardingSkill": "./skills/experiment-learning-setup/SKILL.md",
       "interface": {
-        "displayName": "Experiment Learning · 实验间隙学习",
-        "shortDescription": "Short learning cards during verified local experiment waits",
-        "longDescription": "A Windows local monitor with zero model-token polling. Sends short cards to a separately bound Codex thread only during explicit experiment waits.",
+        "displayName": "Experiment Learning",
+        "shortDescription": "Learn while experiments run",
+        "longDescription": "Use short learning cards while a local experiment is running and the main Codex is explicitly waiting for results. A separate learning conversation keeps explanations and progress together. The local Python monitor checks process identity, elapsed time and waiting markers without calling a model while polling. Card delivery and learning replies use your signed-in Codex account. Windows only; requires Python and a Codex CLI with queue support. Project integration and desktop-open startup are opt-in. Remote jobs, phone delivery and other history formats are not guaranteed.",
         "developerName": "lihao10180419",
         "category": "Productivity",
         "capabilities": [
-          "Read",
-          "Write"
+          "Monitor local experiments",
+          "Show learning cards",
+          "Save learning progress"
         ],
         "defaultPrompt": [
-          "Set up experiment-wait learning with my own separate learning thread.",
-          "Run this local experiment and send a learning card when I am waiting for results."
+          "Set up a separate learning conversation for my experiment waits.",
+          "Run my local evaluation and offer a learning card when I am waiting.",
+          "Pause learning reminders for today."
+        ],
+        "composerIcon": "./assets/icon.png",
+        "logo": "./assets/logo.png"
+      },
+      "requires_local_executor": true,
+      "publication": {
+        "release_notes": "0.1.1: desktop-only submission metadata, icons, self-contained policy and support materials, portable submission ZIP, stricter validation and clean-profile verification."
+      },
+      "review": {
+        "prompts": [
+          "Set up a separate learning conversation and verify the connection before enabling reminders.",
+          "Run my long local evaluation with its original arguments, then offer a short card when I am actually waiting.",
+          "Import my own JSON learning cards and check their prerequisites.",
+          "Pause learning reminders without stopping my experiment.",
+          "Can this monitor a job submitted over SSH? Explain the supported scope before taking action."
         ]
       }
     }

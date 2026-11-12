@@ -1,6 +1,7 @@
 """Setup, diagnose, verify and manage the installed experiment-learning plugin."""
 from pathlib import Path
 import argparse
+from contextlib import closing
 from datetime import datetime
 import hashlib
 import json
@@ -12,7 +13,7 @@ import time
 import uuid
 
 ROOT = Path(__file__).resolve().parent
-from settings import CONFIG_PATH, DATA_HOME, CODEX_STATE_HOME, initialize, load_config, save_config, paths
+from settings import CONFIG_PATH, CARDS_PATH, DATA_HOME, CODEX_STATE_HOME, initialize, load_config, save_config, paths, read_json, validate_cards
 
 ENGINE_ACTIONS = {"run", "launch", "waiting", "busy", "attention", "result", "cancel", "start", "stop", "status", "pause", "resume", "today-off", "done", "later", "cleanup"}
 START = "<!-- experiment-learning-plugin:start -->"
@@ -41,16 +42,23 @@ def bind(thread_id):
     print(json.dumps({"thread_id": thread, "connection_verified": config.get("connection_verified", False), "next": "Run manage.py probe to verify an actual reply"}, ensure_ascii=False))
 
 
-def probe(timeout):
+def probe(timeout, check_event=None):
     a = engine()
     if not a.CONFIG.get("thread_id"):
         raise ValueError("Bind a separate learning thread first")
     with a.connect() as db:
-        if a.monitor_running(db):
+        if not check_event and a.monitor_running(db):
             raise ValueError("Stop the monitor before a connection probe")
         a.read_learning_messages(db)
-        did = a.queue_delivery(db, "connection:" + uuid.uuid4().hex, "connection", "连接测试。请只回复：学习窗口连接成功，并原样附上本事件编号。")
-    a.deliver(did)
+        if check_event:
+            selected = db.execute("SELECT kind FROM deliveries WHERE id=?", (check_event,)).fetchone()
+            if not selected or selected["kind"] != "connection":
+                raise ValueError("Select an existing connection probe from this profile")
+            did = check_event
+        else:
+            did = a.queue_delivery(db, "connection:" + uuid.uuid4().hex, "connection", "连接测试。请只回复：学习窗口连接成功，并原样附上本事件编号。")
+    if not check_event:
+        a.deliver(did)
     deadline = time.monotonic() + timeout
     while True:
         with a.connect() as db:
@@ -62,7 +70,8 @@ def probe(timeout):
             save_config(config)
             print(json.dumps(row, ensure_ascii=False, indent=2))
             return 0
-        if row["status"] == "send_failed" or time.monotonic() >= deadline:
+        if row["status"] == "send_failed" or check_event or time.monotonic() >= deadline:
+            row["next"] = "Check this event again with probe --check-event ID; this never sends another message. For a resume warning, the target must be loaded or a supported local daemon must be available."
             print(json.dumps(row, ensure_ascii=False, indent=2))
             return 1 if row["status"] == "send_failed" else 3
         time.sleep(.25)
@@ -144,7 +153,35 @@ def doctor():
     return 0 if report["supported_platform"] and report["queue_supported"] else 1
 
 
+def cards(action, source=None):
+    initialize()
+    selected = Path(source).expanduser().resolve() if source else CARDS_PATH
+    material = validate_cards(read_json(selected))
+    if action == "import":
+        a = engine()
+        with a.connect() as db:
+            if a.monitor_running(db):
+                raise ValueError("Stop this profile's monitor before importing cards; experiments keep running")
+        backup = CARDS_PATH.with_name("cards.backup-" + datetime.now().strftime("%Y%m%d-%H%M%S-%f") + ".json")
+        shutil.copy2(CARDS_PATH, backup)
+        temporary = CARDS_PATH.with_suffix(".tmp")
+        temporary.write_text(json.dumps(material, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
+        temporary.replace(CARDS_PATH)
+    print(json.dumps({"valid": True, "card_count": len(material), "imported": action == "import"}, ensure_ascii=False))
+    return 0
+
+
 def main():
+    # Stop remains available even after a user accidentally breaks config/cards.
+    # This flag never signals or cancels the experiment workers.
+    if len(sys.argv) > 1 and sys.argv[1] == "stop":
+        import sqlite3
+        database = DATA_HOME / "runtime" / "state.sqlite3"
+        if database.exists():
+            with closing(sqlite3.connect(database, timeout=10)) as db, db:
+                db.execute("INSERT OR REPLACE INTO settings VALUES('stop_requested','1')")
+        print("Monitor stop requested; experiments keep running.")
+        return 0
     if len(sys.argv) > 1 and sys.argv[1] in ENGINE_ACTIONS:
         return subprocess.call([sys.executable, "-X", "utf8", str(ROOT / "assistant.py"), *sys.argv[1:]])
     p = argparse.ArgumentParser(description=__doc__)
@@ -155,10 +192,15 @@ def main():
     q.add_argument("--thread", required=True)
     q = subs.add_parser("probe", help="One explicit model-backed connection test; accepted queue is not a confirmed reply")
     q.add_argument("--timeout", type=float, default=60)
+    q.add_argument("--check-event", help="Read an existing probe result without sending another model message")
     q = subs.add_parser("integrate")
     q.add_argument("--scope", choices=("user", "project"), required=True)
     q.add_argument("--project")
     q.add_argument("--remove", action="store_true")
+    q = subs.add_parser("cards", help="Validate or import user-authored JSON cards without calling a model")
+    cq = q.add_subparsers(dest="cards_action", required=True)
+    cq.add_parser("validate").add_argument("--file")
+    cq.add_parser("import").add_argument("--file", required=True)
     args = p.parse_args()
     if args.command == "paths":
         print(json.dumps(paths(), ensure_ascii=False, indent=2))
@@ -176,10 +218,12 @@ def main():
     if args.command == "probe":
         if not 0 < args.timeout <= 300:
             raise ValueError("Probe timeout must be >0 and <=300 seconds")
-        return probe(args.timeout)
+        return probe(args.timeout, args.check_event)
     if args.command == "integrate":
         integrate(args.scope, args.project, args.remove)
         return 0
+    if args.command == "cards":
+        return cards(args.cards_action, args.file)
     if args.command == "disable-autostart":
         from codex_autostart import disable
         return disable()

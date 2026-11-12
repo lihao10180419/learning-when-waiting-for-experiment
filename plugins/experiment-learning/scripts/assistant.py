@@ -24,7 +24,12 @@ from settings import DATA_HOME, CONFIG_PATH, CARDS_PATH, CODEX_STATE_HOME, load_
 RUNTIME = DATA_HOME / "runtime"
 DB = RUNTIME / "state.sqlite3"
 CONFIG = load_config()
-CARDS = load_cards()
+try:
+    CARDS = load_cards()
+    CARDS_ERROR = None
+except (ValueError, OSError) as error:
+    CARDS = []
+    CARDS_ERROR = str(error)
 LOCAL_TZ = timezone(timedelta(hours=CONFIG["utc_offset_hours"]))
 TERMINAL = ("completed", "failed", "cancelled", "spawn_failed", "lost")
 
@@ -33,9 +38,18 @@ def uid(prefix):
     return prefix + "-" + uuid.uuid4().hex[:16]
 
 
+class ClosingConnection(sqlite3.Connection):
+    """Commit/rollback and release the SQLite handle at the end of each tick."""
+    def __exit__(self, *exception):
+        try:
+            return super().__exit__(*exception)
+        finally:
+            self.close()
+
+
 def connect():
     RUNTIME.mkdir(parents=True, exist_ok=True)
-    db = sqlite3.connect(DB, timeout=10)
+    db = sqlite3.connect(DB, timeout=10, factory=ClosingConnection)
     db.row_factory = sqlite3.Row
     db.execute("PRAGMA busy_timeout=10000")
     return db
@@ -322,7 +336,7 @@ def tick(db):
             # Never put the answer in the first visible request either.
             material = {k: card[k] for k in ("topic", "minutes", "explanation", "example", "question")}
             text = (f"实验已确认运行，主项目明确进入等待。{labels}。{timing}。\n"
-                    + ("继续上次未完成内容。\n" if resume else "学习卡片（流程测试）。\n")
+                    + ("继续上次未完成内容。\n" if resume else "学习卡片。\n")
                     + "请直接展示标题、建议用时、核心解释、例子和自测题。原样保留标题与自测题，首次不要作答。"
                     + "用户回复‘显示答案’时再解释自测题答案；‘已学完’才推进。可回复：暂停／恢复／今日不再提醒／稍后学。\n"
                     + json.dumps(material, ensure_ascii=False))
@@ -334,6 +348,8 @@ def tick(db):
 
 
 def serve():
+    if CARDS_ERROR:
+        raise ValueError("Fix or import a valid cards.json before starting: " + CARDS_ERROR)
     if not CONFIG.get("thread_id") or not CONFIG.get("connection_verified"):
         raise ValueError("A verified learning thread is required")
     import msvcrt
@@ -390,6 +406,8 @@ def monitor_running(db):
 
 
 def start():
+    if CARDS_ERROR:
+        raise ValueError("Fix or import a valid cards.json before starting: " + CARDS_ERROR)
     if os.name != "nt":
         raise ValueError("This release supports Windows only")
     if not CONFIG.get("thread_id"):
@@ -592,6 +610,7 @@ def status():
     from codex_autostart import status as autostart_status
     with connect() as db:
         result = {"monitor_running": monitor_running(db), "thread_id": CONFIG["thread_id"],
+                  "cards_error": CARDS_ERROR, "cards_count": len(CARDS),
                   "codex_open_autostart": autostart_status(),
                   "reader_health": setting(db, "reader_health", "not_started"),
                   "paused": setting(db, "paused", "0") == "1", "off_date": setting(db, "off_date", ""),
@@ -665,6 +684,11 @@ def main():
                     raise ValueError("Unsafe cleanup path")
                 if target.exists():
                     shutil.rmtree(target)
+                wrapper = (RUNTIME / (row[0] + "-wrapper.log")).resolve()
+                if wrapper.parent != RUNTIME.resolve():
+                    raise ValueError("Unsafe wrapper log cleanup path")
+                if wrapper.is_file():
+                    wrapper.unlink()
             print(f"已清理 {len(rows)} 个旧实验的输出目录；进度和事件保留。")
         return 0
     with connect() as db:

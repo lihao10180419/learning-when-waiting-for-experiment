@@ -10,7 +10,7 @@
 
 ## 安装
 
-首版支持 Windows 10/11、Python 3.10+、已登录的 Codex 桌面应用，以及提供 `queue` 的 Codex CLI。原型实测版本为 `0.167.0-alpha.3.2`；其他版本必须通过自己的连接测试。当前不支持 macOS/Linux 或远程调度作业。
+当前支持 Windows 10/11、Python 3.10+、已登录的 Codex 桌面应用，以及提供 `queue` 的 Codex CLI。原型实测版本为 `0.167.0-alpha.3.2`；其他版本必须通过自己的连接测试。当前不支持 macOS/Linux 或远程调度作业。
 
 ```powershell
 codex plugin marketplace add https://github.com/lihao10180419/learning-when-waiting-for-experiment.git
@@ -39,7 +39,7 @@ codex plugin add experiment-learning@experiment-learning-community
 
 ## 学习内容与控制
 
-内置三张明确标为“流程测试”的卡片，不是正式课程。卡片和程序分离，可在用户目录的 `cards.json` 编辑。首次请求和回复都不提前提供答案；在原生学习对话说“显示答案”再由 Codex 解释。
+内置三张“入门示例”卡片。可用 `cards validate` 检查自己的课程，再用 `cards import --file PATH` 导入；导入备份旧卡片并拒绝无效先修关系。卡片和程序分离，可在用户目录的 `cards.json` 编辑。首次请求和回复都不提前提供答案；在原生学习对话说“显示答案”再由 Codex 解释。
 
 只有你明确说“已学完”才推进；收到卡片只记录为 `in_progress`。支持 `暂停`、`恢复`、`今日不再提醒`、`稍后学`，也有对应命令行控制。文字控制需要监测器运行并支持当前会话记录格式。
 
@@ -64,3 +64,5 @@ python tools/build_release.py
 测试使用隔离目录，不投递模型消息。完整接入、卸载、升级与从旧版本迁移见 [设置说明](docs/SETUP.md)，验证范围见 [验收说明](docs/VERIFICATION.md)。升级前先关闭旧版本自动启动，升级后重新设置以刷新插件路径；用户数据保留。
 
 MIT © 2026 lihao10180419 and contributors。
+
+0.1.1 分别提供源码 ZIP 和仅含一个插件的公共目录上传候选 ZIP。发布者、公开政策链接及本机插件适用性仍须确认，不能把本地结构验证等同于通过官方审核。详细材料见[送审准备](docs/SUBMISSION.md)。

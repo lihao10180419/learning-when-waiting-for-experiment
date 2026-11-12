@@ -1,6 +1,7 @@
 """Offline tests: real child processes, isolated profiles, no real queue calls."""
 from pathlib import Path
 import importlib
+import io
 import json
 import os
 import subprocess
@@ -191,6 +192,26 @@ class PluginTests(unittest.TestCase):
         with self.a.connect() as db:
             self.assertEqual(db.execute("SELECT state FROM progress").fetchone()[0], "completed")
 
+    def test_late_probe_reply_can_verify_without_another_model_message(self):
+        config = self.s.load_config()
+        config["thread_id"] = str(uuid.uuid4())
+        self.s.save_config(config)
+        self.a.CONFIG.update(config)
+        fixture = self.profile / "probe-fixture.jsonl"
+        fixture.write_bytes(b"")
+        with self.a.connect() as db:
+            self.a.set_setting(db, "rollout_path", fixture)
+            self.a.read_learning_messages(db)
+            did = self.a.queue_delivery(db, "late-probe", "connection", "probe fixture")
+            db.execute("UPDATE deliveries SET status='queued_accepted' WHERE id=?", (did,))
+        with patch.object(self.m, "engine", return_value=self.a), patch.object(self.a, "deliver", side_effect=AssertionError("Recheck must not send")), patch("sys.stdout", new_callable=io.StringIO):
+            self.assertEqual(self.m.probe(1, did), 3)
+            self.assertFalse(self.s.load_config()["connection_verified"])
+            fixture.write_text(json.dumps({"type":"response_item","payload":{"type":"message","role":"assistant","phase":"final_answer","content":[{"type":"output_text","text":"confirmed " + did}]}})+"\n",encoding="utf-8")
+            self.assertEqual(self.m.probe(1, did), 0)
+            self.assertTrue(self.s.load_config()["connection_verified"])
+            self.assertEqual(self.s.load_config()["verified_event_id"], did)
+
     def test_integration_preserves_other_instructions_and_is_idempotent(self):
         project = self.profile / "project"
         project.mkdir()
@@ -226,6 +247,87 @@ class PluginTests(unittest.TestCase):
         restarted = self.w.SessionGate(["one:born-B"])
         self.assertFalse(restarted.should_start(["one:born-B"]))
         self.assertFalse(self.w.desktop_path(r"C:\Program Files\WindowsApps\OpenAI.ChatGPT_1.0\app\ChatGPT.exe"))
+
+    def test_cards_reject_missing_prerequisites_cycles_and_invalid_duration(self):
+        original = self.s.load_cards()
+        for mutation in ("missing", "cycle", "boolean", "infinite", "blank", "duplicate"):
+            cards = json.loads(json.dumps(original))
+            if mutation == "missing":
+                cards[0]["prerequisites"] = ["not-a-card"]
+            elif mutation == "cycle":
+                cards[0]["prerequisites"] = [cards[-1]["id"]]
+                cards[-1]["prerequisites"] = [cards[0]["id"]]
+            elif mutation == "boolean":
+                cards[0]["minutes"] = True
+            elif mutation == "infinite":
+                cards[0]["minutes"] = float("inf")
+            elif mutation == "blank":
+                cards[0]["explanation"] = "  "
+            else:
+                cards.append(dict(cards[0]))
+            with self.subTest(mutation=mutation), self.assertRaises(ValueError):
+                self.s.validate_cards(cards)
+        self.assertEqual(self.s.validate_cards(original), original)
+
+    def test_validated_card_import_repairs_broken_material_and_preserves_backup(self):
+        broken = b'{"accidental":"edit"}'
+        self.s.CARDS_PATH.write_bytes(broken)
+        source = self.profile / "my-course.json"
+        course = json.loads(self.s.DEFAULT_CARDS.read_text(encoding="utf-8"))
+        course[0]["topic"] = "My own course"
+        source.write_text(json.dumps(course), encoding="utf-8")
+        failed = self.cli("cards", "validate")
+        self.assertEqual(failed.returncode, 2)
+        status = self.cli("status")
+        self.assertEqual(status.returncode, 0, status.stderr)
+        self.assertTrue(json.loads(status.stdout)["cards_error"])
+        imported = self.cli("cards", "import", "--file", str(source))
+        self.assertEqual(imported.returncode, 0, imported.stderr)
+        self.assertEqual(json.loads(imported.stdout)["card_count"], len(course))
+        self.assertEqual(self.s.load_cards()[0]["topic"], "My own course")
+        self.assertEqual(next(self.profile.glob("cards.backup-*.json")).read_bytes(), broken)
+
+    def test_stop_remains_available_with_broken_configuration_and_cards(self):
+        self.s.CONFIG_PATH.write_text("not JSON", encoding="utf-8")
+        self.s.CARDS_PATH.write_text("not JSON", encoding="utf-8")
+        stopped = self.cli("stop")
+        self.assertEqual(stopped.returncode, 0, stopped.stderr)
+        with self.a.connect() as db:
+            self.assertEqual(self.a.setting(db, "stop_requested"), "1")
+
+    def test_disable_revokes_profile_even_if_shortcut_has_changed(self):
+        config = self.s.load_config()
+        config.update(auto_start_on_codex_open=True, autostart_watcher_on_windows_logon=True)
+        self.s.save_config(config)
+        startup = self.profile / "Startup"
+        startup.mkdir()
+        target = startup / "Codex Experiment Learning Plugin.lnk"
+        target.write_bytes(b"somebody changed this shortcut")
+        receipt = {"shortcut": str(target), "shortcut_sha256": "invalid-old-hash"}
+        (self.a.RUNTIME / "autostart-install.json").write_text(json.dumps(receipt), encoding="utf-8")
+        with patch.object(self.w, "startup_folder", return_value=startup):
+            self.assertEqual(self.w.disable(), 1)
+        self.assertFalse(self.s.load_config()["auto_start_on_codex_open"])
+        self.assertFalse(self.s.load_config()["autostart_watcher_on_windows_logon"])
+        self.assertEqual(target.read_bytes(), b"somebody changed this shortcut")
+
+    def test_cleanup_deletes_only_old_finished_output_and_keeps_progress(self):
+        old = self.launch(1)
+        self.assertEqual(self.cli("result", "--run", old, "--follow").returncode, 0)
+        live = self.launch(5)
+        with self.a.connect() as db:
+            db.execute("UPDATE jobs SET ended=? WHERE id=?", (time.time()-3*86400, old))
+            db.execute("INSERT OR REPLACE INTO progress(card_id,state,last_seen,completed_at) VALUES(?,?,?,?)",
+                       (self.a.CARDS[0]["id"], "completed", time.time(), time.time()))
+        wrapper = self.a.RUNTIME / (old + "-wrapper.log")
+        self.assertTrue(wrapper.is_file())
+        result = self.cli("cleanup", "--older-than-days", "1")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertFalse((self.a.RUNTIME / "runs" / old).exists())
+        self.assertFalse(wrapper.exists())
+        self.assertTrue((self.a.RUNTIME / "runs" / live).is_dir())
+        with self.a.connect() as db:
+            self.assertEqual(db.execute("SELECT state FROM progress").fetchone()[0], "completed")
 
 
 if __name__ == "__main__":

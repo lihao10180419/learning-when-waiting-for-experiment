@@ -8,10 +8,10 @@ Use `integrate --scope user` only when the user requests all-project integration
 
 Runtime commands: `run`, `launch`, `waiting`, `busy`, `attention`, `result`, `cancel`, `status`, `pause`, `resume`, `today-off`, `done`, `later`, `stop`. The experiment's original executable, argument array, cwd and environment must be preserved. Only explicitly noninteractive experiments may use `launch`. Write `waiting` only after the OS confirms the real process and the main agent genuinely waits for results.
 
-User data defaults to `%LOCALAPPDATA%/CodexExperimentLearning/`; set `EXPERIMENT_LEARNING_HOME` before running a command for another profile. Content and progress stay outside the plugin cache. Built-in cards are flow tests. First presentation omits answers. Only explicit completion advances progress.
+User data defaults to `%LOCALAPPDATA%/CodexExperimentLearning/`; set `EXPERIMENT_LEARNING_HOME` before running a command for another profile. Content and progress stay outside the plugin cache. Three built-in cards demonstrate the introductory workflow. Import your own course with `cards import --file PATH`; validation rejects missing prerequisites and cycles. First presentation omits answers. Only explicit completion advances progress.
 
 Known >=10-minute tasks qualify after 30 stable seconds; unknown durations qualify after 3 actual minutes. Missing markers, pending approvals/input, quiet hours and pause suppress learning. `--test` changes thresholds only for a designated simulation. No remote job monitoring, arbitrary-terminal process scanning, user-idle API, phone guarantee or tool hooks are provided.
 
 Local JSONL reply reading is version-specific. Ambiguous queue sends are not retried automatically. Stop and disable optional startup before uninstalling/upgrading; remove only this plugin's marked integration using `integrate --scope user --remove` or the matching project scope. Rerun setup after upgrades to refresh executable paths. Data is retained.
 
-MIT licensed. Repository documentation: https://github.com/lihao10180419/learning-when-waiting-for-experiment
+Packaged documentation: [Setup](docs/SETUP.md), [Privacy](docs/PRIVACY.md), [Support](docs/SUPPORT.md), [Terms](docs/TERMS.md). MIT licensed; see [LICENSE](LICENSE).

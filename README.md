@@ -2,7 +2,7 @@
 
 **Turn verified experiment waits into short learning sessions in a separate Codex conversation.**
 
-[中文说明](README.zh-CN.md) · [Setup](docs/SETUP.md) · [Privacy](docs/PRIVACY.md) · [License](LICENSE)
+[中文说明](README.zh-CN.md) · [Setup](docs/SETUP.md) · [Privacy](docs/PRIVACY.md) · [Support](docs/SUPPORT.md) · [Submission preparation](docs/SUBMISSION.md) · [License](LICENSE)
 
 This Windows Codex plugin runs a small local process monitor. When an experiment is actually running and the main Codex explicitly marks that it is waiting for results, the monitor sends one short learning card to your separately bound learning thread. Completion, failure or a request for human handling can send you back to the project.
 
@@ -52,7 +52,7 @@ Automatic integration uses an opt-in marked `AGENTS.md` block. It covers Codex s
 
 ## Cards, progress and startup
 
-Three editable **flow-test cards** are included; they are not a prescribed curriculum. Cards contain a title, suggested duration, explanation, example, question and answer. The initial request and response omit the answer; ask the native learning conversation to explain it when ready. Only explicit completion advances progress.
+Three editable **introductory example cards** are included. Import your own course with `cards import --file PATH`; validation rejects duplicate IDs, missing prerequisites and cycles. Cards contain a title, suggested duration, explanation, example, question and answer. The initial request and response omit the answer; ask the native learning conversation to explain it when ready. Only explicit completion advances progress.
 
 User state lives outside the plugin cache in `%LOCALAPPDATA%/CodexExperimentLearning/`. Change the profile with `EXPERIMENT_LEARNING_HOME`. Edit `cards.json` and `config.json` there. Default quiet hours are 23:00–08:00 at UTC+8; the fixed UTC offset and hours are configurable.
 
@@ -72,8 +72,10 @@ python tools/validate_release.py
 python tools/build_release.py
 ```
 
-Tests use isolated profiles and make no model calls. The source prototype received real native replies during a 15-second simulation; public-package verification and limits are recorded in [VERIFICATION.md](docs/VERIFICATION.md). Upgrades and optional Windows startup registration require rerunning setup to refresh installed paths while preserving user data.
+Tests use isolated profiles and make no model calls. Package verification and limits are recorded in [VERIFICATION.md](docs/VERIFICATION.md). Upgrades and optional Windows startup registration require rerunning setup to refresh installed paths while preserving user data.
 
 MIT © 2026 lihao10180419 and contributors.
 
 Packaging follows the [official OpenAI plugin guide](https://developers.openai.com/plugins/build/plugins); command and hook behavior should be checked against the installed CLI and [official CLI reference](https://learn.chatgpt.com/docs/cli/reference).
+
+Version 0.1.1 builds separate `-source.zip` and `-submission.zip` artifacts. The submission ZIP contains one plugin at its root. Public listing identity, policy publication and directory eligibility must be resolved before submission; see [SUBMISSION.md](docs/SUBMISSION.md).

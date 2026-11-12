@@ -38,6 +38,10 @@ def load_config():
 
 def load_cards():
     cards = read_json(CARDS_PATH if CARDS_PATH.exists() else DEFAULT_CARDS)
+    return validate_cards(cards)
+
+
+def validate_cards(cards):
     required = {"id", "topic", "prerequisites", "minutes", "explanation", "example", "question", "answer"}
     if not isinstance(cards, list):
         raise ValueError("cards.json must contain a list")
@@ -47,9 +51,30 @@ def load_cards():
             raise ValueError("A learning card is missing required fields")
         if not isinstance(card["id"], str) or not card["id"] or card["id"] in seen:
             raise ValueError("Card ids must be unique, non-empty strings")
-        if not isinstance(card["prerequisites"], list) or not isinstance(card["minutes"], (int, float)) or card["minutes"] <= 0:
+        if any(not isinstance(card[key], str) or not card[key].strip() for key in ("topic", "explanation", "example", "question", "answer")):
+            raise ValueError("Card text fields must be non-empty strings")
+        if (not isinstance(card["prerequisites"], list)
+                or any(not isinstance(value, str) or not value for value in card["prerequisites"])
+                or isinstance(card["minutes"], bool) or not isinstance(card["minutes"], (int, float))
+                or not math.isfinite(card["minutes"]) or card["minutes"] <= 0):
             raise ValueError("Invalid card prerequisites or duration")
         seen.add(card["id"])
+    graph = {card["id"]: card["prerequisites"] for card in cards}
+    if any(prerequisite not in seen for card in cards for prerequisite in card["prerequisites"]):
+        raise ValueError("A prerequisite references a missing card id")
+    visiting, completed = set(), set()
+    def visit(card_id):
+        if card_id in visiting:
+            raise ValueError("Card prerequisites contain a cycle")
+        if card_id in completed:
+            return
+        visiting.add(card_id)
+        for prerequisite in graph[card_id]:
+            visit(prerequisite)
+        visiting.remove(card_id)
+        completed.add(card_id)
+    for card_id in graph:
+        visit(card_id)
     return cards
 
 

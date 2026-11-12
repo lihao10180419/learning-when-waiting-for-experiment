@@ -4,6 +4,7 @@ import ast
 import json
 import re
 import sys
+from submission_checks import inspect_plugin, image_info
 
 ROOT = Path(__file__).resolve().parents[1]
 ROOT_FILES = {"README.md", "README.zh-CN.md", "LICENSE", "CHANGELOG.md", ".gitignore", ".gitattributes"}
@@ -60,18 +61,24 @@ def validate():
     ]
     files = public_files()
     for path in files:
-        text = path.read_text(encoding="utf-8")
+        if path.suffix == ".png":
+            image_info(path)
+            continue
+        text = path.read_bytes().decode("utf-8")
         for reason, pattern in forbidden:
             if pattern.search(text):
                 raise ValueError(f"{reason} found in {path.relative_to(ROOT)}")
         if path.suffix == ".py":
             ast.parse(text, filename=str(path))
+        if path.suffix == ".json":
+            json.loads(text)
         if path.name == "SKILL.md":
             match = re.match(r"---\s*\nname: ([a-z0-9-]+)\ndescription: (.+)\n---", text)
             if not match or len(match[1]) > 64 or path.parent.name != match[1]:
                 raise ValueError(f"Invalid skill frontmatter/name: {path.relative_to(ROOT)}")
     return {"passed": True, "version": manifest["version"], "file_count": len(files),
-            "marketplace": marketplace["name"], "plugin": manifest["name"], "private_state_included": False}
+            "marketplace": marketplace["name"], "plugin": manifest["name"], "private_state_included": False,
+            "portal_review_performed": False, **inspect_plugin(plugin)}
 
 
 if __name__ == "__main__":

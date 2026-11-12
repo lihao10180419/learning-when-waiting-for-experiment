@@ -21,7 +21,7 @@ profile_args, _ = profile_parser.parse_known_args()
 if profile_args.home:
     os.environ["EXPERIMENT_LEARNING_HOME"] = str(Path(profile_args.home).expanduser().resolve())
 import assistant as a
-from settings import CONFIG_PATH, load_config
+from settings import CONFIG_PATH, load_config, save_config
 
 ROOT = Path(__file__).resolve().parent
 STATE = a.RUNTIME / "autostart-state.json"
@@ -106,24 +106,31 @@ def status():
     return state
 
 
-def disable():
+def startup_folder():
     startup_buffer = ctypes.create_unicode_buffer(32768)
     result = ctypes.windll.shell32.SHGetFolderPathW(None, 7, None, 0, startup_buffer)
     if result:
         raise OSError("Cannot resolve current-user Startup folder")
-    target = Path(startup_buffer.value) / "Codex Experiment Learning Plugin.lnk"
+    return Path(startup_buffer.value)
+
+
+def disable():
+    # Revoking this profile's watcher must work even if Windows or another
+    # application changed the shortcut. Never delete an unverified file.
+    config = load_config()
+    config.update(auto_start_on_codex_open=False, autostart_watcher_on_windows_logon=False)
+    save_config(config)
+    target = startup_folder() / "Codex Experiment Learning Plugin.lnk"
     receipt_path = a.RUNTIME / "autostart-install.json"
     receipt = json.loads(receipt_path.read_text(encoding="utf-8-sig")) if receipt_path.exists() else {}
     if target.exists():
         if Path(receipt.get("shortcut", "")).resolve() != target.resolve():
-            raise ValueError("Startup shortcut identity does not match our installation receipt")
+            print("Autostart disabled for this profile; an unverified Startup entry was retained.", file=sys.stderr)
+            return 1
         expected = receipt.get("shortcut_sha256", "").casefold()
         if not expected or hashlib.sha256(target.read_bytes()).hexdigest() != expected:
-            raise ValueError("Startup shortcut changed; will not remove an unverified entry")
-    config_path = CONFIG_PATH
-    config = json.loads(config_path.read_text(encoding="utf-8"))
-    config.update(auto_start_on_codex_open=False, autostart_watcher_on_windows_logon=False)
-    config_path.write_text(json.dumps(config, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            print("Autostart disabled for this profile; changed shortcut retained for manual inspection.", file=sys.stderr)
+            return 1
     if target.exists():
         target.unlink()
     print("已关闭自动启动；监听器约 5 秒内退出，实验与监测器不被终止。")
